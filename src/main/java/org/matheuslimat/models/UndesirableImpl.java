@@ -9,6 +9,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.brunocvcunha.instagram4j.Instagram4j;
 import org.brunocvcunha.instagram4j.requests.InstagramGetUserFollowersRequest;
 import org.brunocvcunha.instagram4j.requests.InstagramGetUserFollowingRequest;
+import org.brunocvcunha.instagram4j.requests.InstagramSearchUsernameRequest;
 import org.brunocvcunha.instagram4j.requests.InstagramUnfollowRequest;
 import org.brunocvcunha.instagram4j.requests.payload.InstagramGetUserFollowersResult;
 import org.brunocvcunha.instagram4j.requests.payload.InstagramSearchUsernameResult;
@@ -45,15 +46,35 @@ public class UndesirableImpl implements Undesirable {
 	}
 
 	@Override
-	public void removeAllUnfollowers(Set<InstagramUserSummary> unfollowers, InstagramSearchUsernameResult userResult,
-			Instagram4j instagram, Integer timeSleepUnfollow)
-			throws ClientProtocolException, IOException, InterruptedException {
+	public void removeAllUnfollowers(Set<InstagramUserSummary> unfollowers, Instagram4j instagram,
+			Integer timeSleepUnfollow) throws ClientProtocolException, IOException, InterruptedException {
 		for (InstagramUserSummary unfollow : unfollowers) {
 			instagram.sendRequest(new InstagramUnfollowRequest(unfollow.getPk()));
 			Thread.sleep(timeSleepUnfollow);
 			System.out.println(unfollow.getUsername() + " Removido!");
 		}
+
 		System.out.println("Feito! Todos os não seguidores foram removidos do seu instagram.");
+
+	}
+
+	@Override
+	public void removeAllUnfollowers(Set<InstagramUserSummary> unfollowers, Instagram4j instagram,
+			Integer timeSleepUnfollow, Integer numberFollowers)
+			throws ClientProtocolException, IOException, InterruptedException {
+		for (InstagramUserSummary unfollow : unfollowers) {
+			InstagramSearchUsernameResult userResult = instagram
+					.sendRequest(new InstagramSearchUsernameRequest(unfollow.getUsername()));
+
+			if (userResult.getUser().getFollower_count() < numberFollowers &&  userResult.getUser().getFollower_count() > 0){
+				instagram.sendRequest(new InstagramUnfollowRequest(unfollow.getPk()));
+				Thread.sleep(timeSleepUnfollow);
+				System.out.println("Qtd de seguidores: " + userResult.getUser().getFollower_count() + " | "
+						+ unfollow.getUsername() + " Removido!");
+			}
+		}
+
+		System.out.println("Feito! Todos os não seguidores que tinha menos de " + numberFollowers + " seguidores foram removidos do seu instagram.");
 
 	}
 

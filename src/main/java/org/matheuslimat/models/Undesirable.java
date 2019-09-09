@@ -13,8 +13,12 @@ public interface Undesirable {
 	public Set<InstagramUserSummary> getUnfollowers(InstagramSearchUsernameResult userResult, Instagram4j instagram)
 			throws ClientProtocolException, IOException;
 
-	public void removeAllUnfollowers(Set<InstagramUserSummary> unfollowers, InstagramSearchUsernameResult userResult,
+	public void removeAllUnfollowers(Set<InstagramUserSummary> unfollowers,
 			Instagram4j instagram, Integer timeSleepUnfollow)
+			throws ClientProtocolException, IOException, InterruptedException;
+	
+	public void removeAllUnfollowers(Set<InstagramUserSummary> unfollowers,
+			Instagram4j instagram, Integer timeSleepUnfollow, Integer numberFollowers)
 			throws ClientProtocolException, IOException, InterruptedException;
 
 }
