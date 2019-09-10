@@ -1,14 +1,11 @@
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-import java.util.Set;
 
-import org.apache.http.HttpHost;
 import org.apache.http.client.ClientProtocolException;
 import org.brunocvcunha.instagram4j.Instagram4j;
 import org.brunocvcunha.instagram4j.requests.InstagramSearchUsernameRequest;
 import org.brunocvcunha.instagram4j.requests.payload.InstagramSearchUsernameResult;
-import org.brunocvcunha.instagram4j.requests.payload.InstagramUserSummary;
 import org.brunocvcunha.instagram4j.util.PropertiesReader;
 import org.matheuslimat.models.Undesirable;
 import org.matheuslimat.models.UndesirableImpl;
@@ -16,7 +13,7 @@ import org.matheuslimat.models.UndesirableImpl;
 public class App {
 
 	public static Instagram4j instagram = null;
-	public static final Integer TIME_SLEEP_UNFOLLOW = 12000;
+	public static final Integer TIME_SLEEP_UNFOLLOW = 10000;
 	public static final Integer QUANTITY_FOLLOWERS = 6000;
 
 	// ======================== MAIN ==========================
@@ -40,9 +37,9 @@ public class App {
 		instagram.login();
 
 		Undesirable undesirable = new UndesirableImpl();
-//		undesirable.removeAllUnfollowers(undesirable.getUnfollowers(getUserByHandle(prop), instagram), instagram,
-//				TIME_SLEEP_UNFOLLOW);
-		undesirable.removeAllUnfollowers(undesirable.getUnfollowers(getUserByHandle(prop), instagram), instagram, TIME_SLEEP_UNFOLLOW, QUANTITY_FOLLOWERS);
+		undesirable.removeAllUnfollowers(undesirable.getUnfollowers(getUserByHandle(prop), instagram), instagram,
+				TIME_SLEEP_UNFOLLOW, QUANTITY_FOLLOWERS);
+
 	}
 
 	public static InstagramSearchUsernameResult getUserByHandle(Properties prop)
@@ -51,5 +48,5 @@ public class App {
 				.sendRequest(new InstagramSearchUsernameRequest(prop.getProperty("searchUsername")));
 		return userResult;
 	}
-
+	
 }

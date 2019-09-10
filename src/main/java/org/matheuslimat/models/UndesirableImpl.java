@@ -1,6 +1,7 @@
 package org.matheuslimat.models;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -15,22 +16,27 @@ import org.brunocvcunha.instagram4j.requests.payload.InstagramGetUserFollowersRe
 import org.brunocvcunha.instagram4j.requests.payload.InstagramSearchUsernameResult;
 import org.brunocvcunha.instagram4j.requests.payload.InstagramUserSummary;
 
+/**
+ * @author Matheus Lima Tavares da Costa
+ */
+
 public class UndesirableImpl implements Undesirable {
 
+	/**
+	 * Retorna todos os não seguidores
+	 */
 	@Override
 	public Set<InstagramUserSummary> getUnfollowers(InstagramSearchUsernameResult userResult, Instagram4j instagram)
 			throws ClientProtocolException, IOException {
 		System.out.println("Listando os não seguidores....");
-		InstagramGetUserFollowersResult followers = instagram
-				.sendRequest(new InstagramGetUserFollowersRequest(userResult.getUser().getPk()));
-		InstagramGetUserFollowersResult following = instagram
-				.sendRequest(new InstagramGetUserFollowingRequest(userResult.getUser().getPk()));
 
+		Followable followable = new FollowableImpl();
 		// lista de seguidores
-		List<InstagramUserSummary> usersFollowers = followers.getUsers();
-		// lista de seguindo
-		List<InstagramUserSummary> usersFollowing = following.getUsers();
+		List<InstagramUserSummary> usersFollowers = followable.getFollowers(userResult, instagram);
 
+		// lista de seguindo
+		List<InstagramUserSummary> usersFollowing = followable.getFollowing(userResult, instagram);
+		
 		// Set de não seguidores
 		Set<InstagramUserSummary> unfollowers = new HashSet<InstagramUserSummary>();
 
@@ -39,12 +45,19 @@ public class UndesirableImpl implements Undesirable {
 			unfollowers.add(followingUser);
 		}
 
-		// remove dos seguindo os contido nos seguidores
 		unfollowers.removeAll(usersFollowers);
+
+		System.out.println("Numero de n seguidores: " + unfollowers.size());
+		for (InstagramUserSummary ius : unfollowers) {
+			System.out.println("Não te segue: " + ius.getUsername());
+		}
 
 		return unfollowers;
 	}
 
+	/**
+	 * Deixa de seguir todos os não seguidores
+	 */
 	@Override
 	public void removeAllUnfollowers(Set<InstagramUserSummary> unfollowers, Instagram4j instagram,
 			Integer timeSleepUnfollow) throws ClientProtocolException, IOException, InterruptedException {
@@ -58,6 +71,10 @@ public class UndesirableImpl implements Undesirable {
 
 	}
 
+	/**
+	 * Deixa de seguir todos os não seguidores que tem uma quantidade de seguidores
+	 * passada via parametro
+	 */
 	@Override
 	public void removeAllUnfollowers(Set<InstagramUserSummary> unfollowers, Instagram4j instagram,
 			Integer timeSleepUnfollow, Integer numberFollowers)
@@ -66,7 +83,8 @@ public class UndesirableImpl implements Undesirable {
 			InstagramSearchUsernameResult userResult = instagram
 					.sendRequest(new InstagramSearchUsernameRequest(unfollow.getUsername()));
 
-			if (userResult.getUser().getFollower_count() < numberFollowers &&  userResult.getUser().getFollower_count() > 0){
+			if (userResult.getUser().getFollower_count() < numberFollowers
+					&& userResult.getUser().getFollower_count() > 0) {
 				instagram.sendRequest(new InstagramUnfollowRequest(unfollow.getPk()));
 				Thread.sleep(timeSleepUnfollow);
 				System.out.println("Qtd de seguidores: " + userResult.getUser().getFollower_count() + " | "
@@ -74,7 +92,8 @@ public class UndesirableImpl implements Undesirable {
 			}
 		}
 
-		System.out.println("Feito! Todos os não seguidores que tinha menos de " + numberFollowers + " seguidores foram removidos do seu instagram.");
+		System.out.println("Feito! Todos os não seguidores que tinha menos de " + numberFollowers
+				+ " seguidores foram removidos do seu instagram.");
 
 	}
 

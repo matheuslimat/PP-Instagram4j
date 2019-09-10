@@ -186,8 +186,9 @@ public class Instagram4j implements Serializable {
      * @return
      * @throws IOException 
      * @throws ClientProtocolException 
+     * @throws InterruptedException 
      */
-    public InstagramLoginResult login() throws ClientProtocolException, IOException {
+    public InstagramLoginResult login() throws ClientProtocolException, IOException, InterruptedException {
 
         log.info("Logging with user " + username + " and password " + password.replaceAll("[a-zA-Z0-9]", "*"));
 
@@ -197,7 +198,8 @@ public class Instagram4j implements Serializable {
         this.sendRequest(new InstagramZeroRatingTokenRequest());
         this.sendRequest(new InstagramLogAttributionRequest());
 
-        
+//        System.out.println("Talvez vc tenha que permitir esse dispositivo no browser verifique isso acessando o site do instagram. 30s");
+//        Thread.sleep(30000);
         InstagramLoginPayload loginRequest = InstagramLoginPayload.builder().username(username)
                 .password(password)
                 .guid(uuid)
@@ -220,7 +222,7 @@ public class Instagram4j implements Serializable {
         return loginResult;
     }
 
-    public InstagramLoginResult login(String verificationCode) throws ClientProtocolException, IOException {
+    public InstagramLoginResult login(String verificationCode) throws ClientProtocolException, IOException, InterruptedException {
         if (identifier == null) {
             login();
         }
