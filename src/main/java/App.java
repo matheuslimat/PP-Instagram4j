@@ -7,6 +7,10 @@ import org.brunocvcunha.instagram4j.Instagram4j;
 import org.brunocvcunha.instagram4j.requests.InstagramSearchUsernameRequest;
 import org.brunocvcunha.instagram4j.requests.payload.InstagramSearchUsernameResult;
 import org.brunocvcunha.instagram4j.util.PropertiesReader;
+import org.matheuslimat.models.Desirable;
+import org.matheuslimat.models.DesirableImpl;
+import org.matheuslimat.models.Followable;
+import org.matheuslimat.models.FollowableImpl;
 import org.matheuslimat.models.Undesirable;
 import org.matheuslimat.models.UndesirableImpl;
 
@@ -36,9 +40,19 @@ public class App {
 		instagram.setup();
 		instagram.login();
 
+		Followable followable = new FollowableImpl();
+		
 		Undesirable undesirable = new UndesirableImpl();
-		undesirable.removeAllUnfollowers(undesirable.getUnfollowers(getUserByHandle(prop), instagram), instagram,
-				TIME_SLEEP_UNFOLLOW, QUANTITY_FOLLOWERS);
+		// Removendo não seguidores
+//		undesirable.removeAllUnfollowers(undesirable.getUnfollowers(getUserByHandle(prop), instagram), instagram,
+//				TIME_SLEEP_UNFOLLOW, QUANTITY_FOLLOWERS);
+		
+		Desirable desirable = new DesirableImpl();
+		
+		// Listando fãs retorna um set<InstagramUserSummary>
+//		desirable.getFans(followable.getFollowers(getUserByHandle(prop), instagram), followable.getFollowing(getUserByHandle(prop), instagram));
+		
+		desirable.followAllByUsername("coloqueusuarioaprocuraraqui", instagram);
 
 	}
 

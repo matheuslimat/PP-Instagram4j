@@ -13,10 +13,7 @@ public interface Followable {
 	public List<InstagramUserSummary> getFollowers(InstagramSearchUsernameResult userResult, Instagram4j instagram)
 			throws ClientProtocolException, IOException;
 
-	List<InstagramUserSummary> getFollowing(InstagramSearchUsernameResult userResult, Instagram4j instagram)
+	public List<InstagramUserSummary> getFollowing(InstagramSearchUsernameResult userResult, Instagram4j instagram)
 			throws ClientProtocolException, IOException;
 	
-	List<InstagramUserSummary> getFans(InstagramSearchUsernameResult userResult, Instagram4j instagram)
-			throws ClientProtocolException, IOException;
-
 }
